@@ -5,7 +5,13 @@ import { supabase } from "../lib/supabase";
 import { Button } from "./ui/button";
 import { Input } from "./ui/input";
 import { Label } from "./ui/label";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "./ui/card";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "./ui/card";
 import { cn } from "../lib/utils";
 
 const validatePassword = (password: string) => {
@@ -14,21 +20,36 @@ const validatePassword = (password: string) => {
     errors.push({ id: "length", message: "Minimum 8 characters long." });
   }
   if (!/[A-Z]/.test(password)) {
-    errors.push({ id: "uppercase", message: "At least one uppercase letter (A-Z)." });
+    errors.push({
+      id: "uppercase",
+      message: "At least one uppercase letter (A-Z).",
+    });
   }
   if (!/[a-z]/.test(password)) {
-    errors.push({ id: "lowercase", message: "At least one lowercase letter (a-z)." });
+    errors.push({
+      id: "lowercase",
+      message: "At least one lowercase letter (a-z).",
+    });
   }
   if (!/[0-9]/.test(password)) {
     errors.push({ id: "number", message: "At least one number (0-9)." });
   }
   if (!/[^A-Za-z0-9]/.test(password)) {
-    errors.push({ id: "symbol", message: "At least one symbol (e.g., !, $, #)." });
+    errors.push({
+      id: "symbol",
+      message: "At least one symbol (e.g., !, $, #).",
+    });
   }
   return errors;
 };
 
-const ValidationCheck = ({ rule, isValid }: { rule: string; isValid: boolean }) => (
+const ValidationCheck = ({
+  rule,
+  isValid,
+}: {
+  rule: string;
+  isValid: boolean;
+}) => (
   <motion.li
     initial={{ opacity: 0, x: -10 }}
     animate={{ opacity: 1, x: 0 }}
@@ -95,10 +116,22 @@ export function AuthPage() {
 
   const passwordRules = [
     { id: "length", rule: "8 characters minimum", check: password.length >= 8 },
-    { id: "uppercase", rule: "One uppercase letter", check: /[A-Z]/.test(password) },
-    { id: "lowercase", rule: "One lowercase letter", check: /[a-z]/.test(password) },
+    {
+      id: "uppercase",
+      rule: "One uppercase letter",
+      check: /[A-Z]/.test(password),
+    },
+    {
+      id: "lowercase",
+      rule: "One lowercase letter",
+      check: /[a-z]/.test(password),
+    },
     { id: "number", rule: "One number", check: /[0-9]/.test(password) },
-    { id: "symbol", rule: "One symbol (e.g., $, #)", check: /[^A-Za-z0-9]/.test(password) },
+    {
+      id: "symbol",
+      rule: "One symbol (e.g., $, #)",
+      check: /[^A-Za-z0-9]/.test(password),
+    },
   ];
 
   return (
@@ -106,7 +139,7 @@ export function AuthPage() {
       {/* Animated background */}
       <div className="absolute inset-0 grid-pattern opacity-20" />
       <div className="spotlight" />
-      
+
       {/* Animated gradient orbs */}
       <motion.div
         className="absolute top-20 -left-40 w-96 h-96 bg-white/5 rounded-full blur-3xl"
@@ -249,9 +282,23 @@ export function AuthPage() {
 
                 <Button
                   type="submit"
-                  disabled={loading || !email || !password || (isSignUp && !isPasswordValid)}
+                  disabled={
+                    loading ||
+                    !email ||
+                    !password ||
+                    (isSignUp && !isPasswordValid)
+                  }
                   loading={loading}
-                  className="w-full"
+                  className={cn(
+                    "w-full",
+                    "transition-colors duration-200",
+                    !(
+                      loading ||
+                      !email ||
+                      !password ||
+                      (isSignUp && !isPasswordValid)
+                    ) && "bg-white/80 hover:bg-white/90 text-black shadow-lg"
+                  )}
                   size="lg"
                 >
                   {isSignUp ? "Sign Up" : "Sign In"}
@@ -260,7 +307,9 @@ export function AuthPage() {
 
               <div className="mt-6 text-center">
                 <p className="text-sm text-muted-foreground">
-                  {isSignUp ? "Already have an account?" : "Don't have an account?"}{" "}
+                  {isSignUp
+                    ? "Already have an account?"
+                    : "Don't have an account?"}{" "}
                   <button
                     onClick={() => {
                       setIsSignUp(!isSignUp);

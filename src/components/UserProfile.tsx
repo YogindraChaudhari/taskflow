@@ -103,7 +103,7 @@ export function UserProfile() {
           </div>
 
           <div className="flex items-start gap-4 p-4 bg-black rounded-xl border border-gray-200">
-            <Calendar className="w-5 h-5 text-gray-600 mt-0.5 shrink-0" />
+            <Calendar className="w-5 h-5 text-slate-100 mt-0.5 shrink-0" />
             <div>
               <p className="text-sm font-medium text-gray-50">Member Since</p>
               <p className="text-base text-gray-50 font-semibold">
