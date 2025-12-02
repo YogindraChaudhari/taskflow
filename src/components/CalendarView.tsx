@@ -6,10 +6,19 @@ import {
   AlertTriangle,
   Clock,
   ListTodo,
+  MoreVertical,
 } from "lucide-react";
 import { useState } from "react";
 import { ConfirmationModal } from "./ConfirmationModal";
 import { cn } from "../lib/utils";
+import { Button } from "./ui/button"; // Button component for the Dropdown trigger
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "./ui/dropdown-menu";
 
 const parseSimpleMarkdown = (text: string | null): { __html: string } => {
   if (!text) return { __html: "" };
@@ -213,8 +222,7 @@ export function CalendarView({ tasks, onEdit, onDelete }: CalendarViewProps) {
                 <div
                   key={task.id}
                   className={cn(
-                    // Base Card Styles
-                    `flex flex-col sm:flex-row sm:items-start justify-between p-5 rounded-xl border-l-4 border-2 shadow-xl transition-all duration-200 hover:shadow-2xl`,
+                    `group relative flex flex-col sm:flex-row sm:items-start justify-between p-5 rounded-xl border-l-4 border-2 shadow-xl transition-all duration-200 hover:shadow-2xl`,
 
                     // Background
                     "bg-card",
@@ -290,25 +298,38 @@ export function CalendarView({ tasks, onEdit, onDelete }: CalendarViewProps) {
                     </div>
                   </div>
 
-                  {/* Action Buttons */}
-                  <div className="flex gap-2 mt-3 sm:mt-0 flex-shrink-0">
-                    {/* Edit Button (White/Muted Accent) */}
-                    <button
-                      onClick={() => onEdit(task)}
-                      className="p-2 rounded-lg bg-white/10 hover:bg-white/20 text-white/80 transition-colors duration-200 shadow-sm"
-                      title="Edit Task"
-                    >
-                      <Edit3 className="w-4 h-4" />
-                    </button>
+                  {/* 💡 Action Buttons (Dropdown Menu)*/}
+                  <div className="absolute top-2 right-2 flex-shrink-0">
+                    <DropdownMenu>
+                      <DropdownMenuTrigger asChild>
+                        <Button
+                          variant="ghost"
+                          size="icon"
+                          className="h-8 w-8 transition-opacity"
+                        >
+                          <MoreVertical className="w-4 h-4" />
+                        </Button>
+                      </DropdownMenuTrigger>
+                      <DropdownMenuContent
+                        align="end"
+                        className="bg-black rounded-xl border-2 border-white/40"
+                      >
+                        <DropdownMenuItem onClick={() => onEdit(task)}>
+                          <Edit3 className="w-4 h-4 mr-2" />
+                          Edit
+                        </DropdownMenuItem>
 
-                    {/* Delete Button (Destructive/Red Accent) */}
-                    <button
-                      onClick={() => handleDeleteClick(task)}
-                      className="p-2 rounded-lg bg-red-900/50 hover:bg-red-900 text-red-400 transition-colors duration-200 shadow-sm"
-                      title="Delete Task"
-                    >
-                      <Trash2 className="w-4 h-4" />
-                    </button>
+                        <DropdownMenuSeparator />
+
+                        <DropdownMenuItem
+                          onClick={() => handleDeleteClick(task)}
+                          className="text-destructive focus:text-destructive text-red-700"
+                        >
+                          <Trash2 className="w-4 h-4 mr-2 text-red-800" />
+                          Delete
+                        </DropdownMenuItem>
+                      </DropdownMenuContent>
+                    </DropdownMenu>
                   </div>
                 </div>
               );
