@@ -77,14 +77,14 @@ export function UserProfile() {
       <div className="bg-black rounded-2xl shadow-xl p-6 sm:p-8 border border-gray-100">
         {/* Header */}
         <div className="flex items-center gap-4 mb-8 pb-6 border-b border-gray-200">
-          <div className="w-16 h-16 bg-linear-to-br from-white to-gray-900 rounded-full flex items-center justify-center">
-            <User className="w-8 h-8 text-gray-800" />
+          <div className="w-16 h-16 bg-linear-to-br from-gray-950 to-gray-700 rounded-full flex items-center justify-center border-2 border-white">
+            <User className="w-8 h-8 text-gray-50" />
           </div>
           <div>
             <h2 className="text-2xl font-bold text-gray-50">
               Profile Settings
             </h2>
-            <p className="text-gray-600 text-sm">
+            <p className="text-gray-300 text-sm">
               Manage your account and preferences
             </p>
           </div>

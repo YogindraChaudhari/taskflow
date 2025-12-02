@@ -35,7 +35,7 @@ export function Sidebar({ onNewTask }: SidebarProps) {
       <div className="p-4">
         <Button
           onClick={onNewTask}
-          className="w-full justify-center gap-2 bg-white text-black text-xl font-bold"
+          className="w-full justify-center gap-2 bg-white/10 text-white text-xl font-bold border-2 border-gray-50 shadow-lg shadow-amber-200"
           size="lg"
         >
           New Task

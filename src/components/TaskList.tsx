@@ -59,30 +59,36 @@ export function TaskList({
     archived: tasks.filter((t) => t.archived).length,
   };
 
+  const renderFilterTab = (type: FilterType, label: string) => {
+    const isActive = filter === type;
+
+    const tabClasses = cn(
+      "gap-2 shadow-md rounded-md",
+      isActive ? "text-gray-50 shadow-white" : ""
+    );
+
+    const countClasses = cn(
+      "text-xs px-2 py-1 rounded-full",
+      isActive ? "bg-white/40 text-white" : "bg-white/20 text-white"
+    );
+
+    return (
+      <TabsTrigger value={type} className={tabClasses}>
+        {label}
+        <span className={countClasses}>{counts[type]}</span>
+      </TabsTrigger>
+    );
+  };
+
   return (
     <div className="space-y-6">
       {/* Filter and Sort Controls */}
       <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
         <Tabs value={filter} onValueChange={(v) => setFilter(v as FilterType)}>
           <TabsList>
-            <TabsTrigger value="active" className="gap-2">
-              Active
-              <span className="bg-white/20 text-xs px-2 py-0.5 rounded-full">
-                {counts.active}
-              </span>
-            </TabsTrigger>
-            <TabsTrigger value="completed" className="gap-2">
-              Completed
-              <span className="bg-white/20 text-xs px-2 py-0.5 rounded-full">
-                {counts.completed}
-              </span>
-            </TabsTrigger>
-            <TabsTrigger value="archived" className="gap-2">
-              Archived
-              <span className="bg-white/20 text-xs px-2 py-0.5 rounded-full">
-                {counts.archived}
-              </span>
-            </TabsTrigger>
+            {renderFilterTab("active", "Active")}
+            {renderFilterTab("completed", "Completed")}
+            {renderFilterTab("archived", "Archived")}
           </TabsList>
         </Tabs>
 
