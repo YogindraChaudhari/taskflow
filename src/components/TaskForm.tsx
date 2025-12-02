@@ -16,6 +16,7 @@ import {
   Eye,
   Edit,
 } from "lucide-react";
+import { cn } from "../lib/utils"; // Assuming cn utility is available
 
 interface TaskFormProps {
   onSubmit: (
@@ -39,13 +40,30 @@ const parseSimpleMarkdown = (text: string): { __html: string } => {
   const lines = html.split("\n");
   let result = "";
   for (const line of lines) {
+    // Basic list handling
     if (line.trim().startsWith("- ")) {
+      // Assuming a simple ul/li structure is created externally or needs to be wrapped
+      // For this simplified parser, we'll just output the li
       result += `<li class="ml-4">${line.trim().substring(2)}</li>`;
     } else if (line.trim()) {
       result += `<p class="mb-2">${line}</p>`;
     }
   }
   return { __html: result };
+};
+
+// 💡 NEW: Configuration for priority colors
+const priorityColorMap = {
+  low: "bg-green-600 hover:bg-green-700 text-white",
+  medium: "bg-yellow-600 hover:bg-yellow-700 text-black", // Black text for better contrast on yellow
+  high: "bg-red-600 hover:bg-red-700 text-white",
+};
+
+// 💡 NEW: Configuration for priority labels
+const priorityLabelMap = {
+  low: "Low",
+  medium: "Med", // Changed to 'Med'
+  high: "High",
 };
 
 export function TaskForm({ onSubmit, onClose, editingTask }: TaskFormProps) {
@@ -111,11 +129,24 @@ export function TaskForm({ onSubmit, onClose, editingTask }: TaskFormProps) {
             <Label>Description</Label>
             <Tabs value={markdownTab} onValueChange={setMarkdownTab}>
               <TabsList className="w-full">
-                <TabsTrigger value="write" className="flex-1">
+                {/* 💡 STYLED: Active tab background to white with black text */}
+                <TabsTrigger
+                  value="write"
+                  className={cn(
+                    "flex-1",
+                    markdownTab === "write" && "bg-white text-black shadow-md"
+                  )}
+                >
                   <Edit className="w-4 h-4 mr-2" />
                   Write
                 </TabsTrigger>
-                <TabsTrigger value="preview" className="flex-1">
+                <TabsTrigger
+                  value="preview"
+                  className={cn(
+                    "flex-1",
+                    markdownTab === "preview" && "bg-white text-black shadow-md"
+                  )}
+                >
                   <Eye className="w-4 h-4 mr-2" />
                   Preview
                 </TabsTrigger>
@@ -182,11 +213,17 @@ export function TaskForm({ onSubmit, onClose, editingTask }: TaskFormProps) {
                     key={p}
                     type="button"
                     size="sm"
+                    // 💡 STYLED: Apply color based on priority if selected
                     variant={priority === p ? "default" : "outline"}
                     onClick={() => setPriority(p)}
-                    className="flex-1 capitalize"
+                    className={cn(
+                      "flex-1 capitalize",
+                      // Apply the custom color map if the button is selected
+                      priority === p && priorityColorMap[p]
+                    )}
                   >
-                    {p}
+                    {/* 💡 UPDATED: Use 'Med' for medium priority */}
+                    {priorityLabelMap[p]}
                   </Button>
                 ))}
               </div>
