@@ -52,10 +52,6 @@ export function UserProfile() {
 
       if (tasksError) throw tasksError;
 
-      // Then delete the user account (requires admin API or custom endpoint)
-      // Note: Supabase doesn't allow client-side user deletion by default
-      // You'll need to create a database function or use the admin API
-
       const { error: authError } = await supabase.rpc("delete_user");
 
       if (authError) {

@@ -23,7 +23,6 @@ export function FloatingDock({ onNewTask }: FloatingDockProps) {
       label: "Calendar",
       action: () => setView("calendar"),
     },
-    // 💡 ADDED: The 'Plus' icon as a standard navigation item
     {
       id: "new-task",
       icon: Plus,
@@ -48,21 +47,18 @@ export function FloatingDock({ onNewTask }: FloatingDockProps) {
       <div className="bg-card/80 backdrop-blur-xl border border-border rounded-2xl shadow-2xl p-2 flex items-center gap-1">
         {navItems.map((item) => {
           const Icon = item.icon;
-          // For the 'New Task' button, we don't treat it as an 'active' view
           const isActive = view === item.id && !item.isNewTaskButton;
 
           return (
             <div key={item.id} className="relative">
-              {/* Removed the conditional floating 'Plus' button logic */}
-
               <motion.button
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
-                onClick={item.action as any} // Use the specific action for the item
+                onClick={item.action as any}
                 className={cn(
                   "flex flex-col items-center justify-center w-16 h-16 rounded-xl transition-all",
                   item.isNewTaskButton
-                    ? "bg-primary text-primary-foreground hover:bg-primary/90" // Custom style for the Plus button
+                    ? "bg-primary text-primary-foreground hover:bg-primary/90"
                     : isActive
                     ? "bg-white text-black shadow-lg"
                     : "text-muted-foreground hover:bg-accent"

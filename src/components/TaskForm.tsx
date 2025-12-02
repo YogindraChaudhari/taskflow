@@ -40,10 +40,7 @@ const parseSimpleMarkdown = (text: string): { __html: string } => {
   const lines = html.split("\n");
   let result = "";
   for (const line of lines) {
-    // Basic list handling
     if (line.trim().startsWith("- ")) {
-      // Assuming a simple ul/li structure is created externally or needs to be wrapped
-      // For this simplified parser, we'll just output the li
       result += `<li class="ml-4">${line.trim().substring(2)}</li>`;
     } else if (line.trim()) {
       result += `<p class="mb-2">${line}</p>`;
@@ -52,17 +49,15 @@ const parseSimpleMarkdown = (text: string): { __html: string } => {
   return { __html: result };
 };
 
-// 💡 NEW: Configuration for priority colors
 const priorityColorMap = {
   low: "bg-green-600 hover:bg-green-700 text-white",
-  medium: "bg-yellow-600 hover:bg-yellow-700 text-black", // Black text for better contrast on yellow
+  medium: "bg-yellow-600 hover:bg-yellow-700 text-black", 
   high: "bg-red-600 hover:bg-red-700 text-white",
 };
 
-// 💡 NEW: Configuration for priority labels
 const priorityLabelMap = {
   low: "Low",
-  medium: "Med", // Changed to 'Med'
+  medium: "Med",
   high: "High",
 };
 
@@ -129,7 +124,7 @@ export function TaskForm({ onSubmit, onClose, editingTask }: TaskFormProps) {
             <Label>Description</Label>
             <Tabs value={markdownTab} onValueChange={setMarkdownTab}>
               <TabsList className="w-full">
-                {/* 💡 STYLED: Active tab background to white with black text */}
+                {/* Active tab background to white with black text */}
                 <TabsTrigger
                   value="write"
                   className={cn(
@@ -213,16 +208,13 @@ export function TaskForm({ onSubmit, onClose, editingTask }: TaskFormProps) {
                     key={p}
                     type="button"
                     size="sm"
-                    // 💡 STYLED: Apply color based on priority if selected
                     variant={priority === p ? "default" : "outline"}
                     onClick={() => setPriority(p)}
                     className={cn(
                       "flex-1 capitalize",
-                      // Apply the custom color map if the button is selected
                       priority === p && priorityColorMap[p]
                     )}
                   >
-                    {/* 💡 UPDATED: Use 'Med' for medium priority */}
                     {priorityLabelMap[p]}
                   </Button>
                 ))}

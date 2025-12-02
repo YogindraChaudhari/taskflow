@@ -11,7 +11,7 @@ import {
   Archive,
   ArchiveRestore,
   MoreVertical,
-  AlertTriangle, // 💡 ADDED: For Overdue tag
+  AlertTriangle,
 } from "lucide-react";
 import { Task } from "../lib/supabase";
 import { Card } from "./ui/card";
@@ -109,7 +109,7 @@ interface TaskCardProps {
   onArchiveToggle: (id: string, archived: boolean) => void;
 }
 
-// 💡 UPDATED: Priority colors for dark theme
+// Priority colors for dark theme
 const priorityConfig = {
   low: { color: "bg-green-900/50 text-green-300", label: "LOW" },
   medium: { color: "bg-yellow-900/50 text-yellow-300", label: "MED" },
@@ -281,7 +281,7 @@ export function TaskCard({
                   {priorityConfig[task.priority].label}
                 </span>
 
-                {/* 💡 ADDED: Overdue Tag */}
+                {/* Overdue Tag */}
                 {isOverdue && (
                   <div className="flex items-center gap-1 px-2 py-1 rounded-md text-xs font-semibold bg-red-700/50 text-red-300">
                     <AlertTriangle className="w-3 h-3" />
@@ -293,9 +293,8 @@ export function TaskCard({
                   <div
                     className={cn(
                       "flex items-center gap-1 px-2 py-1 rounded-md text-xs",
-                      // Updated due date tag style for dark theme
                       isOverdue
-                        ? "bg-red-950/40 text-red-400" // Muted overdue color (Less distracting than the bold tag)
+                        ? "bg-red-950/40 text-red-400"
                         : "bg-muted text-muted-foreground"
                     )}
                   >

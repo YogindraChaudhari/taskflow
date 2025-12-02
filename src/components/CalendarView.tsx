@@ -11,7 +11,6 @@ import { useState } from "react";
 import { ConfirmationModal } from "./ConfirmationModal";
 import { cn } from "../lib/utils";
 
-// Reusing the parseSimpleMarkdown function logic, updated for dark theme links
 const parseSimpleMarkdown = (text: string | null): { __html: string } => {
   if (!text) return { __html: "" };
   let html = text
@@ -80,7 +79,7 @@ export function CalendarView({ tasks, onEdit, onDelete }: CalendarViewProps) {
       return acc;
     }
 
-    // Use only the date part for grouping (YYYY-MM-DD)
+    // Used only the date part for grouping (YYYY-MM-DD)
     const dateKey = task.due_date.substring(0, 10);
     if (!acc[dateKey]) {
       acc[dateKey] = [];
@@ -101,7 +100,7 @@ export function CalendarView({ tasks, onEdit, onDelete }: CalendarViewProps) {
       return "No Due Date";
     }
     const date = new Date(dateString);
-    const now = new Date(new Date().setHours(0, 0, 0, 0)); // Start of today
+    const now = new Date(new Date().setHours(0, 0, 0, 0));
     const dateToCheck = new Date(dateString);
 
     // Calculate Today/Tomorrow/Yesterday
@@ -112,7 +111,7 @@ export function CalendarView({ tasks, onEdit, onDelete }: CalendarViewProps) {
     if (diffDays === 0) return "Today";
     if (diffDays === 1) return "Tomorrow";
     if (diffDays === -1) return "Yesterday";
-    if (diffDays < -1) return "Past Due"; // Group all past dates
+    if (diffDays < -1) return "Past Due";
 
     return date.toLocaleDateString("en-US", {
       weekday: "short",
@@ -168,16 +167,12 @@ export function CalendarView({ tasks, onEdit, onDelete }: CalendarViewProps) {
 
           {/* Date Header Block - Visually Prominent */}
           <div className="relative flex items-center mb-6 ml-4">
-            {/* Timeline Marker for dark theme (White/Primary Ring) */}
+            {/* Timeline Marker for dark theme */}
             <div className="absolute left-[-1.9rem] top-1/2 -translate-y-1/2 w-5 h-5 rounded-full bg-primary border-4 border-background shadow-lg z-10"></div>
 
             <h3
               className={`text-2xl font-extrabold pr-3 py-1 
-              ${
-                dateKey === "No Due Date"
-                  ? "text-white/70" // Muted date for No Due Date
-                  : "text-white"
-              }`}
+              ${dateKey === "No Due Date" ? "text-white/70" : "text-white"}`}
             >
               {formatDate(dateKey)}
             </h3>
@@ -201,7 +196,6 @@ export function CalendarView({ tasks, onEdit, onDelete }: CalendarViewProps) {
                 new Date(dateKey) < new Date(new Date().setHours(0, 0, 0, 0)) &&
                 !task.completed;
 
-              // Priority colors for left border accent
               const priorityBorderLeft =
                 task.priority === "high"
                   ? "border-l-red-500"
@@ -209,12 +203,11 @@ export function CalendarView({ tasks, onEdit, onDelete }: CalendarViewProps) {
                   ? "border-l-yellow-500"
                   : "border-l-green-500";
 
-              // 💡 NEW: Border color for the entire card based on status
               const statusBorder = isOverdue
-                ? "border-red-600 ring-1 ring-red-600" // Overdue: Strong red border/ring
+                ? "border-red-600 ring-1 ring-red-600"
                 : task.completed
-                ? "border-gray-700 opacity-80" // Completed: Muted gray border
-                : "border-border hover:border-white/50"; // Upcoming/Default: Subtle white hover
+                ? "border-gray-700 opacity-80"
+                : "border-border hover:border-white/50";
 
               return (
                 <div
@@ -224,12 +217,11 @@ export function CalendarView({ tasks, onEdit, onDelete }: CalendarViewProps) {
                     `flex flex-col sm:flex-row sm:items-start justify-between p-5 rounded-xl border-l-4 border-2 shadow-xl transition-all duration-200 hover:shadow-2xl`,
 
                     // Background
-                    "bg-card", // Removed conditional backgrounds
+                    "bg-card",
 
                     // Left Priority Accent
                     !task.completed && priorityBorderLeft,
 
-                    // 💡 STATUS BORDER (Replaces explicit status background colors)
                     statusBorder
                   )}
                 >
