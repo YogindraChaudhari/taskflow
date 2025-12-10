@@ -2,7 +2,6 @@ import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Task } from "../lib/supabase";
 import { TaskCard } from "./TaskCard";
-import { Button } from "./ui/button";
 import { Tabs, TabsList, TabsTrigger } from "./ui/tabs";
 import { ListFilter, SlidersHorizontal } from "lucide-react";
 import { cn } from "../lib/utils";
@@ -129,18 +128,19 @@ export function TaskList({
           </p>
         </motion.div>
       ) : (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+        <div className="columns-1 md:columns-2 lg:columns-3 space-y-4">
           <AnimatePresence mode="popLayout">
             {filteredTasks.map((task) => (
-              <TaskCard
-                key={task.id}
-                task={task}
-                onToggle={onToggle}
-                onDelete={onDelete}
-                onEdit={onEdit}
-                onPinToggle={onPinToggle}
-                onArchiveToggle={onArchiveToggle}
-              />
+              <div key={task.id} className="break-inside-avoid-column">
+                <TaskCard
+                  task={task}
+                  onToggle={onToggle}
+                  onDelete={onDelete}
+                  onEdit={onEdit}
+                  onPinToggle={onPinToggle}
+                  onArchiveToggle={onArchiveToggle}
+                />
+              </div>
             ))}
           </AnimatePresence>
         </div>

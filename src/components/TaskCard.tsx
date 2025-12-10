@@ -12,6 +12,8 @@ import {
   ArchiveRestore,
   MoreVertical,
   AlertTriangle,
+  ChevronDown,
+  ChevronUp,
 } from "lucide-react";
 import { Task } from "../lib/supabase";
 import { Card } from "./ui/card";
@@ -32,6 +34,8 @@ import {
   DropdownMenuTrigger,
 } from "./ui/dropdown-menu";
 import { cn } from "../lib/utils";
+
+const MAX_VISIBLE_CONTENT_LINES = 4;
 
 const formatRelativeTime = (
   isoDate: string | null,
@@ -67,9 +71,13 @@ const formatRelativeTime = (
   return isUpdated ? `edited ${timeString}` : timeString;
 };
 
-const parseSimpleMarkdown = (text: string | null): { __html: string } => {
-  if (!text) return { __html: "" };
-  let html = text
+const parseSimpleMarkdown = (
+  text: string | null,
+  isExpanded: boolean
+): { __html: string; requiresTruncation: boolean } => {
+  if (!text) return { __html: "", requiresTruncation: false };
+
+  const html = text
     .replace(/\*\*(.*?)\*\*/g, "<strong>$1</strong>")
     .replace(/\*(.*?)\*/g, "<em>$1</em>")
     .replace(
@@ -79,25 +87,42 @@ const parseSimpleMarkdown = (text: string | null): { __html: string } => {
 
   const lines = html.split("\n");
   let result = "";
+  let visibleLines = 0;
+  let requiresTruncation = false;
 
   for (let i = 0; i < lines.length; i++) {
-    let line = lines[i].trim();
+    const line = lines[i].trim();
     if (!line) continue;
+
+    if (!isExpanded && visibleLines >= MAX_VISIBLE_CONTENT_LINES) {
+      requiresTruncation = true;
+      break;
+    }
 
     if (line.startsWith("- ")) {
       result += '<ul class="list-disc pl-5 text-sm text-muted-foreground">';
       while (i < lines.length && lines[i].trim().startsWith("- ")) {
+        if (!isExpanded && visibleLines >= MAX_VISIBLE_CONTENT_LINES) {
+          requiresTruncation = true;
+          i = lines.length;
+          break;
+        }
         result += `<li class="ml-2">${lines[i].trim().substring(2)}</li>`;
+        visibleLines++;
         i++;
       }
       result += "</ul>";
       i--;
     } else {
       result += `<p class="text-sm mb-1 text-muted-foreground">${line}</p>`;
+      visibleLines++;
     }
   }
 
-  return { __html: result };
+  const totalContentLines = lines.filter((l) => l.trim().length > 0).length;
+  requiresTruncation = totalContentLines > MAX_VISIBLE_CONTENT_LINES;
+
+  return { __html: result, requiresTruncation };
 };
 
 interface TaskCardProps {
@@ -125,8 +150,13 @@ export function TaskCard({
   onArchiveToggle,
 }: TaskCardProps) {
   const [showConfirmDelete, setShowConfirmDelete] = useState(false);
+  const [isExpanded, setIsExpanded] = useState(false);
 
-  // Check if today's date is past the due date
+  const { __html: parsedHtml, requiresTruncation } = parseSimpleMarkdown(
+    task.description,
+    isExpanded
+  );
+
   const isOverdue =
     task.due_date &&
     !task.completed &&
@@ -141,7 +171,6 @@ export function TaskCard({
 
   const createdAtTime = new Date(task.created_at).getTime();
   const updatedAtTime = new Date(task.updated_at).getTime();
-  // Consider a task edited if updated_at is significantly later than created_at
   const isEdited = updatedAtTime - createdAtTime > 5000;
   const displayTime = isEdited ? task.updated_at : task.created_at;
   const timeText = formatRelativeTime(displayTime, isEdited);
@@ -161,7 +190,8 @@ export function TaskCard({
             "group relative p-5 transition-all hover:border-white",
             task.completed && "opacity-60",
             task.archived && "opacity-40",
-            task.pinned && "ring-2 ring-white/30 bg-gray-900"
+            task.pinned &&
+              "ring-2 ring-gray-300 bg-linear-to-tr from-emerald-700 to-sky-700"
           )}
         >
           {/* Pin indicator */}
@@ -257,21 +287,44 @@ export function TaskCard({
                 </DropdownMenu>
               </div>
 
+              {/* DESCRIPTION & SEE MORE BUTTON */}
               {task.description && (
-                <div
-                  className={cn(
-                    "mt-2 prose prose-sm max-w-none",
-                    task.completed && "line-through opacity-60"
+                <>
+                  <div
+                    className={cn(
+                      "mt-2 prose prose-sm max-w-none",
+                      task.completed && "line-through opacity-60"
+                    )}
+                    dangerouslySetInnerHTML={{ __html: parsedHtml }}
+                  />
+
+                  {/* See More/See Less Button */}
+                  {requiresTruncation && (
+                    <Button
+                      variant="link"
+                      size="sm"
+                      onClick={() => setIsExpanded(!isExpanded)}
+                      className="p-2 h-auto mt-2 rounded-xl bg-black border-2 border-slate-300 text-primary hover:text-primary/80 transition-colors flex items-center gap-1"
+                    >
+                      {isExpanded ? (
+                        <>
+                          <ChevronUp className="w-4 h-4" />
+                          See Less
+                        </>
+                      ) : (
+                        <>
+                          <ChevronDown className="w-4 h-4" />
+                          See More
+                        </>
+                      )}
+                    </Button>
                   )}
-                  dangerouslySetInnerHTML={parseSimpleMarkdown(
-                    task.description
-                  )}
-                />
+                </>
               )}
 
               {/* Tags */}
               <div className="flex items-center flex-wrap gap-2 mt-3">
-                {/* Priority Tag (Now uses Red/Yellow/Green styles) */}
+                {/* Priority Tag (Red/Yellow/Green styles) */}
                 <span
                   className={cn(
                     "px-2 py-1 rounded-md text-xs font-medium",

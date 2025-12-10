@@ -11,7 +11,7 @@ import {
 import { useState } from "react";
 import { ConfirmationModal } from "./ConfirmationModal";
 import { cn } from "../lib/utils";
-import { Button } from "./ui/button"; // Button component for the Dropdown trigger
+import { Button } from "./ui/button"; 
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -298,7 +298,7 @@ export function CalendarView({ tasks, onEdit, onDelete }: CalendarViewProps) {
                     </div>
                   </div>
 
-                  {/* 💡 Action Buttons (Dropdown Menu)*/}
+                  {/*  Action Buttons (Dropdown Menu)*/}
                   <div className="absolute top-2 right-2 flex-shrink-0">
                     <DropdownMenu>
                       <DropdownMenuTrigger asChild>
